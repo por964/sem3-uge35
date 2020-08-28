@@ -19,7 +19,7 @@ public class CustomerFacade {
     
     public static void main(String[] args) {
         EntityManager em = emf.createEntityManager();
-        Customer cus = new Customer("Hansen", "Lykkevej 1");
+        Customer cus = new Customer("Hansen", "Lykkevej 22");
         em.getTransaction().begin();
         em.persist(cus);
         em.getTransaction().commit();
