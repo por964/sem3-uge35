@@ -33,6 +33,9 @@ public class EmployeeFacade {
         return instance;
     }
     
+    private EmployeeFacade() {
+    }
+    
     private EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
@@ -65,15 +68,15 @@ public class EmployeeFacade {
             }
     }
     
-    public Employee createEmployee(String name, String address, Double salary){
-        Employee emp = new Employee(name, address, salary);
+    public Employee createEmployee(String name, String address, Double salary) {
+        Employee employee = new Employee(name, address, salary);
         EntityManager em = getEntityManager();
-        try{
+        try {
             em.getTransaction().begin();
-            em.persist(emp);
+            em.persist(employee);
             em.getTransaction().commit();
-            return emp;
-        }finally {
+            return employee;
+        } finally {
             em.close();
         }
     }

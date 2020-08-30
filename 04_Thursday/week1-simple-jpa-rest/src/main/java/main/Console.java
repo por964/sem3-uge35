@@ -7,6 +7,7 @@ package main;
 
 import entities.Employee;
 import facades.EmployeeFacade;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -18,14 +19,23 @@ public class Console {
     
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");      
-        EmployeeFacade facade = EmployeeFacade.getEmployeeFacade(emf);
+        EntityManager em = emf.createEntityManager();
         
-        Employee emp1 = facade.createEmployee("Claes", "Kvej 53", 12222.0);
-        Employee emp2 = facade.createEmployee("Niels", "Avej 22", 13333.0);
-        Employee emp3 = facade.createEmployee("Hans", "Birk 33", 14444.0);
-        Employee emp4 = facade.createEmployee("Ole", "Kildevej 44", 15555.0);
-        Employee emp5 = facade.createEmployee("Jens", "Sommervej 55", 16666.0);
+        try {
+            em.getTransaction().begin();
+        
+        em.persist(new Employee("Claes","Kvaj 53", 12222.0));
+        em.persist(new Employee("Niels","Avej 44", 13333.0));
+        em.persist(new Employee("Hans","Svej 33", 14444.0));
+        em.persist(new Employee("Ole","Birk 11", 15555.0));
+        em.persist(new Employee("Jens","Cvej 22", 16666.0));
+        
+        em.getTransaction().commit();
+       
+        } finally {
+            em.close();
+        }
 
-    
+        
 }
 }

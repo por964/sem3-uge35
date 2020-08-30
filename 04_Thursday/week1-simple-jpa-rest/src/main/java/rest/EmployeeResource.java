@@ -67,10 +67,5 @@ public class EmployeeResource {
         throw new UnsupportedOperationException();
     }
     
-    @PUT
-    @Path("/{id}")
-    @Consumes({MediaType.APPLICATION_JSON})
-    public void update(Employee entity, @PathParam("id") int id) {
-        throw new UnsupportedOperationException();
-    }
+
 }
