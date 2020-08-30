@@ -5,7 +5,9 @@
  */
 package facades;
 
+import dto.EmployeeDTO;
 import entities.Employee;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -35,25 +37,27 @@ public class EmployeeFacade {
         return emf.createEntityManager();
     }
     
-    public static Employee getEmployeeByID(int id){
-         EntityManager em = emf.createEntityManager();
-        try{
-            Query q2 = em.createQuery("Select e FROM Employee e WHERE e.id =:id");
-            q2.setParameter("id", id);
-            Employee em2 = (Employee)q2.getSingleResult();
-            return em2;
-        }finally {
+    public EmployeeDTO getEmployeeById(int id) {
+        EntityManager em = getEntityManager();
+        try {
+            Employee employee = em.find(Employee.class, id);
+            EmployeeDTO e1 = new EmployeeDTO(employee);
+            return e1;
+        } finally {
             em.close();
         }
-    }
+    } 
+   
     
-    public static List<Employee> getEmployeesByName(String name) {
+    public EmployeeDTO getEmployeeByName(String name) {
         EntityManager em = emf.createEntityManager();
         try{
-                TypedQuery<Employee> query = 
-                        em.createQuery("SELECT e FROM Employee e where e.name=:name", Employee.class);
-                        query.setParameter("name",name);
-        return query.getResultList();
+                Query qe = 
+                        em.createQuery("SELECT e FROM Employee e where e.name=:name");
+                        qe.setParameter("name",name);
+                        Employee e2 = (Employee) qe.getSingleResult();
+                        EmployeeDTO em2 = new EmployeeDTO(e2);
+        return em2;
             
         }
              finally {
@@ -63,7 +67,7 @@ public class EmployeeFacade {
     
     public Employee createEmployee(String name, String address, Double salary){
         Employee emp = new Employee(name, address, salary);
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = getEntityManager();
         try{
             em.getTransaction().begin();
             em.persist(emp);
@@ -74,23 +78,28 @@ public class EmployeeFacade {
         }
     }
     
-    public static List<Employee> getAllEmployees() {
+    /*public List<EmployeeDTO> getAllEmployees() {
         EntityManager em = emf.createEntityManager();
+        List<EmployeeDTO> emlist = new ArrayList();
         try{
             TypedQuery<Employee> query = 
                        em.createQuery("Select employee from Employee employee",Employee.class);
-            return query.getResultList();
+            List<Employee> em3 = query.getResultList();
+            em3.stream().forEachOrdered(emlist::add);
+            return emlist;
         }finally {
             em.close();
         }
-    }
+    }*/
     
-    public static List<Employee> getEmpHiSalary(){
+    public EmployeeDTO getEmpHiSalary(){
          EntityManager em = emf.createEntityManager();
         try{
-            TypedQuery<Employee> query =
+            Query q =
                     em.createQuery("SELECT e FROM Employee e WHERE e.salary = (SELECT MAX(e.salary) FROM Employee e)",Employee.class);
-            return query.getResultList();
+            Employee res4 = (Employee) q.getSingleResult();
+            EmployeeDTO em4 = new EmployeeDTO(res4);
+            return em4;
         }finally {
             em.close();
         }
