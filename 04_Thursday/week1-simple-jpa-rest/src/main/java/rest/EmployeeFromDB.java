@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import entities.Employee;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -41,7 +42,7 @@ public class EmployeeFromDB {
     @GET
     @Path("all")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAnimals() {
+    public String getAllEmps() {
         EntityManager em = emf.createEntityManager();
         try {
             TypedQuery<Employee> query = em.createQuery("SELECT e FROM Employee e", Employee.class);
@@ -53,18 +54,51 @@ public class EmployeeFromDB {
     }
     
     @GET
-    @Path("{id}")
+    @Path("emp_no/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAnimal(@PathParam("id") int id) {
+    public String getEmployee(@PathParam("id") int id) {
         EntityManager em = emf.createEntityManager();
         try {
-            TypedQuery<Employee> query = em.createQuery("SELECT e FROM Employee e WHERE a.id = :id", Employee.class);
+            TypedQuery<Employee> query = em.createQuery("SELECT e FROM Employee e WHERE e.id = :id", Employee.class);
             query.setParameter("id", id);
             List<Employee> emps = query.getResultList();
             return new Gson().toJson(emps);
         } finally {
             em.close();
         }
+    }
+    
+    @GET
+    @Path("emp_hi")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getEmpHiSalary(){
+         EntityManager em = emf.createEntityManager();
+        try{
+            Query qh =
+                    em.createQuery("SELECT e FROM Employee e WHERE e.salary = (SELECT MAX(e.salary) FROM Employee e)",Employee.class);
+            Employee emph = (Employee)qh.getSingleResult();
+            return new Gson().toJson(emph);
+        }finally {
+            em.close();
+        }
+    }
+    
+    @GET
+    @Path("emp_name/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getEmployeesByName(@PathParam("name") String name) {
+        EntityManager em = emf.createEntityManager();
+        try{
+                TypedQuery<Employee> qname = 
+                        em.createQuery("SELECT e FROM Employee e where e.name=:name", Employee.class);
+                        qname.setParameter("name",name);
+                        List<Employee> emps = qname.getResultList();
+        return new Gson().toJson(emps);
+            
+        }
+             finally {
+                em.close();
+            }
     }
 
     /**
@@ -77,6 +111,8 @@ public class EmployeeFromDB {
         //TODO return proper representation object
         throw new UnsupportedOperationException();
     }
+    
+    
 
     /**
      * PUT method for updating or creating an instance of EmployeeFromDB
