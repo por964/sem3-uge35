@@ -59,6 +59,14 @@ public class EmployeeResource {
         return Response.ok().entity(gson.toJson(facade.getEmployeeByName(name))).build();
     }
     
+    @GET
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllEmployees() {
+         
+        return Response.ok().entity(gson.toJson(facade.getAllEmployees())).build();
+    }
+    
     
 
     @POST

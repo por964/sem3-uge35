@@ -81,19 +81,24 @@ public class EmployeeFacade {
         }
     }
     
-    /*public List<EmployeeDTO> getAllEmployees() {
-        EntityManager em = emf.createEntityManager();
+    public List<EmployeeDTO> getAllEmployees() {
+        EntityManager em = getEntityManager();
         List<EmployeeDTO> emlist = new ArrayList();
-        try{
+        try {
             TypedQuery<Employee> query = 
                        em.createQuery("Select employee from Employee employee",Employee.class);
             List<Employee> em3 = query.getResultList();
-            em3.stream().forEachOrdered(emlist::add);
+            em3.stream().forEach(p -> {
+            emlist.add(new EmployeeDTO(p));
+        });
             return emlist;
-        }finally {
+    } finally {
             em.close();
         }
-    }*/
+    
+    }
+        
+    
     
     public EmployeeDTO getEmpHiSalary(){
          EntityManager em = emf.createEntityManager();
